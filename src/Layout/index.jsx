@@ -3,6 +3,7 @@ import RightMenu from './RightMenu';
 import LeftMenu from './LeftMenu';
 import { Drawer, Button } from 'antd';
 import { AlignRightOutlined } from '@ant-design/icons';
+import { Outlet } from 'react-router';
 
 const Navbar = () => {
   const [visible, setVisible] = useState(false);
@@ -21,43 +22,48 @@ const Navbar = () => {
   const onClose = () => setVisible(false);
 
   return (
-    <nav className="bg-white shadow-md px-6 py-3 flex justify-between items-center">
-      {/* Logo */}
-      <div className="text-blue-500 text-lg font-bold">
-        <a href="#">Logo</a>
+    <>
+      <nav className="bg-white shadow-md px-6 py-3 flex justify-between items-center">
+        {/* Logo */}
+        <div className="text-blue-500 text-lg font-bold">
+          <a href="#">Logo</a>
+        </div>
+
+        {/* Menú principal */}
+        {!isMobile ? (
+          <div className="flex w-full justify-between items-center">
+            <div className="flex space-x-6">
+              <LeftMenu mode="horizontal" />
+            </div>
+            <div className="flex space-x-4">
+              <RightMenu mode="horizontal" />
+            </div>
+          </div>
+        ) : (
+          <Button className="bg-blue-500 text-white" onClick={showDrawer}>
+            <AlignRightOutlined />
+          </Button>
+        )}
+
+        {/* Menú lateral en móvil */}
+        <Drawer
+          title="Menú"
+          placement="left"
+          closable={false}
+          onClose={onClose}
+          open={visible}
+          width="50%"
+        >
+          <div className="overflow-auto">
+            <LeftMenu mode="inline" />
+            <RightMenu mode="inline" />
+          </div>
+        </Drawer>
+      </nav>
+      <div>
+        <Outlet />
       </div>
-
-      {/* Menú principal */}
-      {!isMobile ? (
-        <div className="flex w-full justify-between items-center">
-          <div className="flex space-x-6">
-            <LeftMenu mode="horizontal" />
-          </div>
-          <div className="flex space-x-4">
-            <RightMenu mode="horizontal" />
-          </div>
-        </div>
-      ) : (
-        <Button className="bg-blue-500 text-white" onClick={showDrawer}>
-          <AlignRightOutlined />
-        </Button>
-      )}
-
-      {/* Menú lateral en móvil */}
-      <Drawer
-        title="Menú"
-        placement="left"
-        closable={false}
-        onClose={onClose}
-        open={visible}
-        width="50%"
-      >
-        <div className="overflow-auto">
-          <LeftMenu mode="inline" />
-          <RightMenu mode="inline" />
-        </div>
-      </Drawer>
-    </nav>
+    </>
   );
 };
 
