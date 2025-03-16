@@ -5,6 +5,7 @@ import { Drawer, Button } from 'antd';
 import { AlignRightOutlined } from '@ant-design/icons';
 import { Outlet } from 'react-router';
 
+
 const Navbar = () => {
   const [visible, setVisible] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
@@ -40,7 +41,7 @@ const Navbar = () => {
             </div>
           </div>
         ) : (
-          <Button className="bg-blue-500 text-white" onClick={showDrawer}>
+          <Button className="bg-blue-500 text-white p-2 rounded-md" onClick={showDrawer}>
             <AlignRightOutlined />
           </Button>
         )}
@@ -49,15 +50,13 @@ const Navbar = () => {
         <Drawer
           title="Menú"
           placement="left"
-          closable={false}
+          closable={true}
           onClose={onClose}
           open={visible}
-          width="50%"
+          width="50%"  // Ajuste para móviles
         >
-          <div className="overflow-auto">
-            <LeftMenu mode="inline" />
-            <RightMenu mode="inline" />
-          </div>
+          <LeftMenu mode="inline" />
+          <RightMenu mode="inline" />
         </Drawer>
       </nav>
       <div>
