@@ -105,7 +105,7 @@ const Map = () => {
 
         {/* Marcador de deslizamiento */}
         <Circle center={[-17.4000, -66.1600]} radius={500} color="red">
-          <Marker position={[-17.4000, -66.1600]} icon={iconoDeslizamiento}>
+          <Marker position={[-17.4000, -66.1600]} icon={iconoDeslizamiento} eventHandlers={{ click: showModal }}>
             <Popup>¡Deslizamiento reportado aquí!</Popup>
           </Marker>
         </Circle>
