@@ -29,6 +29,7 @@ const iconoDeslizamiento = new L.Icon({
 
 const Map = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const data = [
     {
       title: 'Ant Design Title 1',
@@ -58,7 +59,7 @@ const Map = () => {
   return (
     <>
       <Drawer
-        placement={'right'}
+        placement={`${!isMobile ? "right" : "bottom"}`}
         closable={false}
         onClose={handleCancel}
         open={isModalOpen}
