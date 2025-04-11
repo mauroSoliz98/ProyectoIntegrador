@@ -3,8 +3,8 @@ import { MapContainer, TileLayer, Marker, Popup, Circle } from 'react-leaflet';
 import L from 'leaflet';
 import { Drawer, Card, Avatar, List, Typography } from 'antd';
 import { MdLocationOn } from "react-icons/md";
-import floodIcon from '../../assets/flood.png';
-import landslideIcon from '../../assets/landslide.png';
+import floodIcon from '../../assets/icons/flood.png';
+import landslideIcon from '../../assets/icons/landslide.png';
 const { Meta } = Card;
 const { Text } = Typography;
 

@@ -1,6 +1,6 @@
 import React from 'react'
 import { Menu } from 'antd'
-import itemsNav from './_navs'
+import itemsNav from '../_navs'
 
 const LeftMenu = ({mode}) => {
     

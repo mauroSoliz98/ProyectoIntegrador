@@ -6,7 +6,7 @@ import { AlignRightOutlined } from '@ant-design/icons';
 import { Outlet } from 'react-router';
 
 
-const Navbar = () => {
+const Dashboard = () => {
   const [visible, setVisible] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
@@ -66,4 +66,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default Dashboard;
