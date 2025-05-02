@@ -1,8 +1,9 @@
+import { NavLink } from "react-router";
+
 const nav = [
     {
         key: '1',
-        label: 'Inicio',
-        to: '/',
+        label:  <NavLink to="/home/home">Inicio</NavLink>,
     },
     {
         key: 'sub2',
@@ -22,23 +23,19 @@ const nav = [
     },
     {
         key: '4',
-        label: 'Mapa',
-        to: '/mapa',
+        label:  <NavLink to="/home/map">Mapa</NavLink>,
     },
     {
         key: '5',
-        label: 'Oportunidades',
-        to: '/oportunidades',
+        label:  <NavLink to="/home/oportunidades">Oportunidades</NavLink>,
     },
     {
         key: '6',
-        label: 'Capacitaciones',
-        to: '/capacitaciones',
+        label: <NavLink to="/home/capacitaciones">Capacitaciones</NavLink>,
     },
     {
         key: '7',
-        label: 'Sobre Nosotros',
-        to: '/nosotros',
+        label: <NavLink to="/home/aboutus">Sobre Nosotros</NavLink>,
     }
 ]
 export default nav;

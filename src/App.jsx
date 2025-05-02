@@ -1,10 +1,14 @@
 import Dashboard from "./Layout/dashboard"
 import { Route,Routes } from "react-router"
 import { Login } from "./Pages/Auth/Login"
-import Map from "./Pages/Map/Map"
 import { AuthLayout } from "./Layout/auth/authLayout"
 import { Register } from "./Pages/Auth/Register"
 import { ToastContainer } from "react-toastify"
+import AboutUs from "./Pages/AboutUs/AboutUs"
+import Capacitaciones from "./Pages/Capacitaciones/Capacitaciones"
+import Oportunidades from "./Pages/Oportunidades/Oportunidades"
+import Home from "./Pages/Home/Home"
+import Map from "./Pages/Map/Map"
 
 function App() {
 
@@ -18,7 +22,11 @@ function App() {
         </Route>
         <Route path="/home" element={<Dashboard />}>
           <Route index element={<Map/>} />
+          <Route path="home" element={<Home />} />
           <Route path="map" element={<Map/>} />
+          <Route path="oportunidades" element={<Oportunidades />} />
+          <Route path="capacitaciones" element={<Capacitaciones />} />
+          <Route path="aboutus" element={<AboutUs />} />
         </Route>
       </Routes>
       <ToastContainer

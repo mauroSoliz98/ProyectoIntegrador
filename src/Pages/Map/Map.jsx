@@ -1,53 +1,28 @@
 import { useState, useEffect } from "react"
 import { MapContainer, TileLayer, Marker, Popup, Circle, useMapEvent } from "react-leaflet"
-import L from "leaflet"
-import { Drawer, Card, Button} from "antd"
+import { Drawer, Card, Button, Popconfirm} from "antd"
 import {toast} from "react-toastify"
-import { MdLocationOn } from "react-icons/md"
-import floodIcon from "../../assets/icons/flood.png"
-import landslideIcon from "../../assets/icons/landslide.png"
-import fireIcon from "../../assets/icons/fire.png" // Asumiendo que tienes un icono para incendios
+import { MdLocationOn, MdDelete } from "react-icons/md"
 import { MapForm } from "./MapForm"
 import servicePoint from "../../Services/servicePoint"
+import icons from "./icons"
 const { Meta } = Card
 
 // Coordenadas de Cochabamba
 const COCHABAMBA_COORDS = [-17.3895, -66.1568]
-
-// Iconos personalizados
-const iconoInundacion = new L.Icon({
-  iconUrl: floodIcon,
-  iconSize: [38, 38],
-  iconAnchor: [19, 38],
-  popupAnchor: [0, -38],
-})
-
-const iconoDeslizamiento = new L.Icon({
-  iconUrl: landslideIcon,
-  iconSize: [38, 38],
-  iconAnchor: [19, 38],
-  popupAnchor: [0, -38],
-})
-
-const iconoIncendio = new L.Icon({
-  iconUrl: fireIcon,
-  iconSize: [38, 38],
-  iconAnchor: [19, 38],
-  popupAnchor: [0, -38],
-})
 
 // Función para obtener el icono según el tipo de desastre
 const getIconByType = (type) => {
   switch (type.toLowerCase()) {
     case "inundacion":
     case "inundación":
-      return iconoInundacion
+      return icons.iconoInundacion
     case "deslizamiento":
-      return iconoDeslizamiento
+      return icons.iconoDeslizamiento
     case "incendio":
-      return iconoIncendio
+      return icons.iconoIncendio
     default:
-      return iconoInundacion
+      return icons.iconoInundacion
   }
 }
 
@@ -76,6 +51,7 @@ const EventClick = ({ onClick }) => {
 
 const Map = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [loading, setLoading] = useState(false) 
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768)
   const [events, setEvents] = useState([])
   const [selectedPosition, setSelectedPosition] = useState(null)
@@ -178,6 +154,34 @@ const Map = () => {
       toast.error("Error al crear el punto de interés", {theme: "light", position: "bottom-right"})
     }
   }
+  
+  const handleDelete = async (id) => {
+    if (!id) {
+      toast.error("ID de evento no válido", { theme: "light", position: "bottom-right" })
+      return
+    }
+
+    try {
+      setLoading(true)
+      console.log("Eliminando evento con ID:", id)
+
+      // Usar eliminate en lugar de delete (que no existe en el servicio)
+      await servicePoint.eliminate(id)
+
+      // Actualizar la lista de eventos eliminando el evento con el ID correspondiente
+      setEvents((prevEvents) => prevEvents.filter((event) => event.id !== id))
+
+      toast.success("Punto de interés eliminado exitosamente", {
+        theme: "light",
+        position: "bottom-right",
+      })
+    } catch (error) {
+      console.error("Error deleting event:", error)
+      toast.error("Error al eliminar el evento", { theme: "light", position: "bottom-right" })
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const handleMapClick = (position) => {
     setSelectedPosition(position)
@@ -187,10 +191,6 @@ const Map = () => {
       latitude: position.lat,
       longitude: position.lng,
     }))
-    showModal()
-  }
-
-  const showModal = () => {
     setIsModalOpen(true)
   }
 
@@ -265,12 +265,31 @@ const Map = () => {
               color={getColorBySeverity(event.severity)}
             >
               <Marker position={[event.latitude, event.longitude]} icon={getIconByType(event.disaster_type)}>
-                <Popup>
-                  <div>
-                    <h3>{event.disaster_type}</h3>
-                    <p>Severidad: {event.severity}</p>
-                    <p>Dirección: {event.address}</p>
-                    <p>{event.description}</p>
+              <Popup>
+                  <div className="flex flex-col gap-2">
+                    <h3 className="text-lg font-bold">{event.disaster_type || "Tipo desconocido"}</h3>
+                    <p>
+                      <strong>Severidad:</strong> {event.severity || "No especificada"}
+                    </p>
+                    <p>
+                      <strong>Dirección:</strong> {event.address || "No especificada"}
+                    </p>
+                    <p>{event.description || "Sin descripción"}</p>
+
+                    {/* Botón para eliminar el punto */}
+                    <div className="flex justify-end mt-2">
+                      <Popconfirm
+                        title="Eliminar punto"
+                        description="¿Estás seguro de que deseas eliminar este punto?"
+                        onConfirm={() => handleDelete(event.id)}
+                        okText="Sí"
+                        cancelText="No"
+                      >
+                        <Button danger type="primary" icon={<MdDelete />} loading={loading}>
+                          Eliminar
+                        </Button>
+                      </Popconfirm>
+                    </div>
                   </div>
                 </Popup>
               </Marker>
