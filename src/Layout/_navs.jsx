@@ -27,7 +27,7 @@ const nav = [
     },
     {
         key: '5',
-        label:  <NavLink to="/home/oportunidades">Oportunidades</NavLink>,
+        label:  <NavLink to="/home/foro">Chat</NavLink>,
     },
     {
         key: '6',

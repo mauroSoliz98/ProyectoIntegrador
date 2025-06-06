@@ -11,3 +11,7 @@ body {
   padding: 0;
   font-family: sans-serif;
 } 
+.custom-card-header .ant-card-head {
+  background-color: #1890ff;
+  color: white;
+}
