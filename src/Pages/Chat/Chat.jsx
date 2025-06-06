@@ -43,9 +43,9 @@ const Chat = () => {
     if (!profileId) return;
 
     // Crear conexión WebSocket con el backend
-    const websocketUrl = serviceChat.socketConn() // Ajusta según tu entorno
-    
-    websocketRef.current = new WebSocket(websocketUrl);
+    //const websocketUrl = `wss://https://proyectointegradorbackend-gbuj.onrender.com//api/chat/ws`; <--Falla
+    //cosnt websocketUrl = `ws://localhost:8000/api/chat/ws`; // Para desarrollo local
+    websocketRef.current = serviceChat.socketConn(); //<--Falla
 
     websocketRef.current.onopen = () => {
       console.log('Conexión WebSocket establecida');
