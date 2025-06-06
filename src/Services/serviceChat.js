@@ -24,7 +24,7 @@ const create = async(data) => {
 }// Ajusta según tu entorno
 
 const socketConn = () => {
-    const socket = `wss:${baseURL}/ws`;
+    const socket = `wss://${baseURL}/ws`;
     return new WebSocket(socket);
 } // Cambié de "chats" a "chat"
 
