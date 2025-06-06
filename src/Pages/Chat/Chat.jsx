@@ -43,7 +43,7 @@ const Chat = () => {
     if (!profileId) return;
 
     // Crear conexión WebSocket con el backend
-    const websocketUrl = `ws://localhost:8000/api/chat/ws`; // Ajusta según tu entorno
+    const websocketUrl = serviceChat.socketConn() // Ajusta según tu entorno
     
     websocketRef.current = new WebSocket(websocketUrl);
 

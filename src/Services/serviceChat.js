@@ -21,9 +21,15 @@ const create = async(data) => {
         console.error("Error creating data:", error);
         throw error;
     }
-}
+}// Ajusta según tu entorno
+
+const socketConn = () => {
+    const response = new WebSocket(`ws:${baseURL}/ws`);
+    return response
+} // Cambié de "chats" a "chat"
 
 export default {
     getAll: getAll,
-    create: create
+    create: create,
+    socketConn: socketConn
 }
