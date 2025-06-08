@@ -43,8 +43,8 @@ const Chat = () => {
     if (!profileId) return;
 
     // Crear conexión WebSocket con el backend
-    const websocketUrl = `wss://https://proyectointegradorbackend-gbuj.onrender.com//api/chat/ws`; 
-    //const websocketUrl = `ws://localhost:8000/api/chat/ws`; // Para desarrollo local
+    //const websocketUrl = `wss://https://proyectointegradorbackend-gbuj.onrender.com//api/chat/ws`; 
+    const websocketUrl = `ws://localhost:8000/api/chat/ws`; // Para desarrollo local
     //websocketRef.current = serviceChat.socketConn(); //<--Falla
     websocketRef.current = new WebSocket(websocketUrl);
     websocketRef.current.onopen = () => {

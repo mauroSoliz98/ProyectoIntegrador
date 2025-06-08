@@ -1,374 +1,160 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { Layout, Menu, Button, Card, Row, Col, Typography, Steps, Avatar, Carousel } from 'antd';
 import { 
-  Button, 
-  Card, 
-  Row, 
-  Col, 
-  Typography, 
-  Space, 
-  Statistic, 
-  Badge,
-  Timeline,
-  Alert,
-  Input
-} from 'antd';
-import {
+  HomeOutlined, 
+  TeamOutlined, 
+  AlertOutlined, 
+  LoginOutlined, 
+  AppstoreOutlined, 
   PhoneOutlined,
-  TeamOutlined,
-  ClockCircleOutlined,
-  CheckCircleOutlined,
-  HeartOutlined,
-  AlertOutlined,
-  UserOutlined,
-  EnvironmentOutlined,
-  SafetyOutlined,
-  FireOutlined
+  HeartOutlined
 } from '@ant-design/icons';
 
-const { Title, Paragraph, Text } = Typography;
+const { Header, Content, Footer } = Layout;
+const { Title, Text, Paragraph } = Typography;
+const { Step } = Steps;
 
-export default function RescatistasHomepage() {
-  const handleEmergencyCall = () => {
-    console.log('Llamada de emergencia activada');
-  };
-
-  const handleEmergencyReport = () => {
-    console.log('Reporte de emergencia enviado');
-  };
-
-  const handleVolunteerRegister = () => {
-    console.log('Registro de voluntario enviado');
-  };
-
-  const stats = [
-    { title: 'Rescates Realizados', value: 2847, icon: <CheckCircleOutlined /> },
-    { title: 'Voluntarios Activos', value: 156, icon: <TeamOutlined /> },
-    { title: 'Tiempo Promedio Respuesta', value: '12 min', icon: <ClockCircleOutlined /> },
-    { title: 'Zonas Cubiertas', value: 8, icon: <EnvironmentOutlined /> }
+const Home = () => {
+  // Datos de ejemplo
+  const features = [
+    {
+      title: "Alertas Rápidas",
+      icon: <AlertOutlined style={{ fontSize: '32px' }} />,
+      description: "Recibe notificaciones instantáneas de emergencias cercanas"
+    },
+    {
+      title: "Coordinación en Equipo",
+      icon: <TeamOutlined style={{ fontSize: '32px' }} />,
+      description: "Organiza equipos de rescate eficientemente"
+    },
+    {
+      title: "Mapa en Tiempo Real",
+      icon: <AppstoreOutlined style={{ fontSize: '32px' }} />,
+      description: "Visualiza emergencias y recursos en un mapa interactivo"
+    }
   ];
 
-  const recentRescues = [
-    { 
-      time: 'Hace 2 horas', 
-      location: 'Zona Sur - El Alto', 
-      type: 'Rescate en montaña',
-      status: 'Completado',
-      volunteers: 4
+  const testimonials = [
+    {
+      name: "Carlos Rodríguez",
+      role: "Rescatista en Medellín",
+      content: "Esta plataforma ha revolucionado nuestra capacidad de respuesta en desastres naturales"
     },
-    { 
-      time: 'Hace 5 horas', 
-      location: 'Centro - Plaza Murillo', 
-      type: 'Emergencia médica',
-      status: 'Completado',
-      volunteers: 2
-    },
-    { 
-      time: 'Hace 1 día', 
-      location: 'Zona Norte - Villa Fátima', 
-      type: 'Búsqueda y rescate',
-      status: 'Completado',
-      volunteers: 6
+    {
+      name: "Ana Martínez",
+      role: "Voluntaria en Bogotá",
+      content: "Gracias a esta app hemos reducido el tiempo de respuesta de 2 horas a 20 minutos"
     }
   ];
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#f5f5f5' }}>
-      {/* Header de Emergencia */}
-      <Alert
-        message="🚨 LÍNEA DE EMERGENCIA 24/7: 911 - 165 - 118"
-        type="error"
-        showIcon
-        style={{ textAlign: 'center', fontSize: '16px', fontWeight: 'bold' }}
-      />
-
+    <Layout className="layout">
       {/* Hero Section */}
-      <div style={{ 
-        background: 'linear-gradient(135deg, #1890ff 0%, #722ed1 100%)',
-        padding: '80px 0',
-        color: 'white',
-        textAlign: 'center'
-      }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px' }}>
-          <Title level={1} style={{ color: 'white', fontSize: '3.5rem', margin: 0 }}>
-            Rescatistas Voluntarios La Paz
+      <Content style={{ padding: '0 50px', marginTop: 30 }}>
+        <div style={{ background: '#f0f2f5', padding: '80px 20px', textAlign: 'center' }}>
+          <Title level={1} style={{ marginBottom: 20 }}>
+            Plataforma para Rescatistas Voluntarios
           </Title>
-          <Paragraph style={{ 
-            color: 'rgba(255,255,255,0.9)', 
-            fontSize: '1.3rem', 
-            margin: '24px 0 40px',
-            maxWidth: '600px',
-            margin: '24px auto 40px'
-          }}>
-            Unidos salvamos vidas. Respuesta rápida y profesional en situaciones de emergencia
-            en toda la región de La Paz.
+          <Paragraph style={{ fontSize: '18px', maxWidth: '800px', margin: '0 auto 30px' }}>
+            Conectamos a rescatistas con personas que necesitan ayuda en situaciones de emergencia
           </Paragraph>
-          
-          <Space size="large">
-            <Button 
-              type="primary" 
-              danger 
-              size="large"
-              icon={<PhoneOutlined />}
-              onClick={handleEmergencyCall}
-              style={{ 
-                height: '60px', 
-                fontSize: '18px',
-                background: '#ff4d4f',
-                border: 'none',
-                boxShadow: '0 4px 15px rgba(255,77,79,0.4)'
-              }}
-            >
-              EMERGENCIA AHORA
-            </Button>
-            <Button 
-              type="default" 
-              size="large"
-              icon={<HeartOutlined />}
-              style={{ 
-                height: '60px', 
-                fontSize: '18px',
-                background: 'rgba(255,255,255,0.2)',
-                color: 'white',
-                border: '2px solid rgba(255,255,255,0.3)'
-              }}
-            >
-              SER VOLUNTARIO
-            </Button>
-          </Space>
+          <Button type="primary" size="large" style={{ marginRight: '16px' }}>
+            Únete como Voluntario
+          </Button>
+          <Button size="large">Reportar Emergencia</Button>
         </div>
-      </div>
 
-      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '60px 24px' }}>
-        
-        {/* Estadísticas */}
-        <Row gutter={[24, 24]} style={{ marginBottom: '60px' }}>
-          {stats.map((stat, index) => (
-            <Col xs={24} sm={12} lg={6} key={index}>
-              <Card style={{ textAlign: 'center', height: '100%' }}>
-                <div style={{ fontSize: '32px', color: '#1890ff', marginBottom: '12px' }}>
-                  {stat.icon}
-                </div>
-                <Statistic 
-                  title={stat.title} 
-                  value={stat.value}
-                  valueStyle={{ color: '#1890ff', fontSize: '24px' }}
-                />
-              </Card>
-            </Col>
-          ))}
-        </Row>
-
-        <Row gutter={[32, 32]}>
-          {/* Reportar Emergencia */}
-          <Col xs={24} lg={12}>
-            <Card 
-              title={
-                <Space>
-                  <AlertOutlined style={{ color: '#ff4d4f' }} />
-                  <span>Reportar Emergencia</span>
-                </Space>
-              }
-              style={{ height: '100%' }}
-            >
-              <div>
-                <div style={{ marginBottom: '16px' }}>
-                  <label style={{ display: 'block', marginBottom: '8px', fontWeight: '500' }}>
-                    Ubicación de la Emergencia *
-                  </label>
-                  <Input 
-                    placeholder="Ej: Calle Sagárnaga #123, Centro"
-                    prefix={<EnvironmentOutlined />}
-                    size="large"
-                  />
-                </div>
-                
-                <div style={{ marginBottom: '16px' }}>
-                  <label style={{ display: 'block', marginBottom: '8px', fontWeight: '500' }}>
-                    Tipo de Emergencia *
-                  </label>
-                  <Input 
-                    placeholder="Ej: Persona atrapada, accidente vehicular"
-                    prefix={<FireOutlined />}
-                    size="large"
-                  />
-                </div>
-                
-                <div style={{ marginBottom: '24px' }}>
-                  <label style={{ display: 'block', marginBottom: '8px', fontWeight: '500' }}>
-                    Descripción Adicional
-                  </label>
-                  <Input.TextArea 
-                    rows={3}
-                    placeholder="Detalles adicionales que puedan ayudar..."
-                  />
-                </div>
-                
-                <Button 
-                  type="primary" 
-                  danger 
-                  onClick={handleEmergencyReport}
-                  size="large"
-                  block
-                  icon={<AlertOutlined />}
-                >
-                  ENVIAR ALERTA DE EMERGENCIA
-                </Button>
-              </div>
-            </Card>
-          </Col>
-
-          {/* Registro de Voluntarios */}
-          <Col xs={24} lg={12}>
-            <Card 
-              title={
-                <Space>
-                  <HeartOutlined style={{ color: '#52c41a' }} />
-                  <span>Únete como Voluntario</span>
-                </Space>
-              }
-              style={{ height: '100%' }}
-            >
-              <div>
-                <div style={{ marginBottom: '16px' }}>
-                  <label style={{ display: 'block', marginBottom: '8px', fontWeight: '500' }}>
-                    Nombre Completo *
-                  </label>
-                  <Input 
-                    placeholder="Tu nombre completo"
-                    prefix={<UserOutlined />}
-                    size="large"
-                  />
-                </div>
-                
-                <div style={{ marginBottom: '16px' }}>
-                  <label style={{ display: 'block', marginBottom: '8px', fontWeight: '500' }}>
-                    Teléfono *
-                  </label>
-                  <Input 
-                    placeholder="Ej: 70123456"
-                    prefix={<PhoneOutlined />}
-                    size="large"
-                  />
-                </div>
-                
-                <div style={{ marginBottom: '16px' }}>
-                  <label style={{ display: 'block', marginBottom: '8px', fontWeight: '500' }}>
-                    Zona de Residencia *
-                  </label>
-                  <Input 
-                    placeholder="Ej: Zona Sur, El Alto"
-                    prefix={<EnvironmentOutlined />}
-                    size="large"
-                  />
-                </div>
-                
-                <div style={{ marginBottom: '24px' }}>
-                  <label style={{ display: 'block', marginBottom: '8px', fontWeight: '500' }}>
-                    Experiencia/Habilidades
-                  </label>
-                  <Input.TextArea 
-                    rows={2}
-                    placeholder="Primeros auxilios, montañismo, etc."
-                  />
-                </div>
-                
-                <Button 
-                  type="primary" 
-                  onClick={handleVolunteerRegister}
-                  size="large"
-                  block
-                  icon={<HeartOutlined />}
-                  style={{ background: '#52c41a', borderColor: '#52c41a' }}
-                >
-                  REGISTRARME COMO VOLUNTARIO
-                </Button>
-              </div>
-            </Card>
-          </Col>
-        </Row>
-
-        {/* Rescates Recientes */}
-        <Card 
-          title={
-            <Space>
-              <ClockCircleOutlined style={{ color: '#1890ff' }} />
-              <span>Actividad Reciente</span>
-            </Space>
-          }
-          style={{ marginTop: '40px' }}
-        >
-          <Timeline>
-            {recentRescues.map((rescue, index) => (
-              <Timeline.Item 
-                key={index}
-                dot={<CheckCircleOutlined style={{ color: '#52c41a' }} />}
-              >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                  <div>
-                    <Text strong>{rescue.type}</Text>
-                    <br />
-                    <Text type="secondary">
-                      <EnvironmentOutlined /> {rescue.location}
-                    </Text>
-                    <br />
-                    <Badge 
-                      status="success" 
-                      text={rescue.status}
-                      style={{ marginRight: '12px' }}
-                    />
-                    <Text type="secondary">
-                      <TeamOutlined /> {rescue.volunteers} voluntarios
-                    </Text>
+        {/* Features Section */}
+        <div style={{ padding: '60px 0', textAlign: 'center' }}>
+          <Title level={2} style={{ marginBottom: 50 }}>Nuestras Funcionalidades</Title>
+          <Row gutter={[24, 48]} justify="center">
+            {features.map((feature, index) => (
+              <Col key={index} xs={24} sm={12} md={8} lg={7}>
+                <Card hoverable style={{ height: '100%' }}>
+                  <div style={{ marginBottom: 20, color: '#1890ff' }}>
+                    {feature.icon}
                   </div>
-                  <Text type="secondary" style={{ fontSize: '12px' }}>
-                    {rescue.time}
-                  </Text>
-                </div>
-              </Timeline.Item>
+                  <Title level={4}>{feature.title}</Title>
+                  <Text>{feature.description}</Text>
+                </Card>
+              </Col>
             ))}
-          </Timeline>
-        </Card>
+          </Row>
+        </div>
 
-        {/* Información de Contacto */}
-        <Card 
-          title="Información de Contacto"
-          style={{ marginTop: '40px', textAlign: 'center' }}
-        >
-          <Row gutter={[24, 24]}>
-            <Col xs={24} md={8}>
-              <div>
-                <PhoneOutlined style={{ fontSize: '24px', color: '#1890ff', marginBottom: '8px' }} />
-                <br />
-                <Text strong>Emergencias</Text>
-                <br />
-                <Text>911 - 165 - 118</Text>
-              </div>
-            </Col>
-            <Col xs={24} md={8}>
-              <div>
-                <EnvironmentOutlined style={{ fontSize: '24px', color: '#1890ff', marginBottom: '8px' }} />
-                <br />
-                <Text strong>Oficina Central</Text>
-                <br />
-                <Text>Plaza San Francisco #456</Text>
-                <br />
-                <Text>La Paz, Bolivia</Text>
-              </div>
-            </Col>
-            <Col xs={24} md={8}>
-              <div>
-                <ClockCircleOutlined style={{ fontSize: '24px', color: '#1890ff', marginBottom: '8px' }} />
-                <br />
-                <Text strong>Disponibilidad</Text>
-                <br />
-                <Text>24 horas, 7 días</Text>
-                <br />
-                <Text>Todo el año</Text>
-              </div>
+        {/* How it Works */}
+        <div style={{ padding: '60px 0', background: '#f9f9f9', textAlign: 'center' }}>
+          <Title level={2} style={{ marginBottom: 50 }}>¿Cómo Funciona?</Title>
+          <Row justify="center">
+            <Col xs={24} md={20} lg={18}>
+              <Steps direction={window.innerWidth < 768 ? 'vertical' : 'horizontal'} current={0}>
+                <Step title="Registro" description="Crea tu cuenta como rescatista" />
+                <Step title="Verificación" description="Completa tu perfil y credenciales" />
+                <Step title="Alertas" description="Recibe notificaciones de emergencias" />
+                <Step title="Actuación" description="Coordina con tu equipo y actúa" />
+              </Steps>
             </Col>
           </Row>
-        </Card>
-      </div>
-    </div>
+        </div>
+
+        {/* Testimonials */}
+        <div style={{ padding: '60px 0', textAlign: 'center' }}>
+          <Title level={2} style={{ marginBottom: 50 }}>Testimonios</Title>
+          <Carousel autoplay dotPosition="top" style={{ maxWidth: 800, margin: '0 auto' }}>
+            {testimonials.map((testimonial, index) => (
+              <div key={index}>
+                <Card style={{ padding: 20 }}>
+                  <Avatar size={64} style={{ marginBottom: 20 }} />
+                  <Paragraph style={{ fontSize: '18px', fontStyle: 'italic' }}>
+                    "{testimonial.content}"
+                  </Paragraph>
+                  <Title level={4} style={{ margin: 0 }}>{testimonial.name}</Title>
+                  <Text type="secondary">{testimonial.role}</Text>
+                </Card>
+              </div>
+            ))}
+          </Carousel>
+        </div>
+
+        {/* Call to Action */}
+        <div style={{ padding: '80px 20px', background: '#1890ff', textAlign: 'center', color: 'white' }}>
+          <Title level={2} style={{ color: 'white' }}>
+            ¿Listo para hacer la diferencia?
+          </Title>
+          <Paragraph style={{ fontSize: '18px', maxWidth: '600px', margin: '0 auto 30px' }}>
+            Únete a nuestra comunidad de más de 5,000 rescatistas voluntarios en todo el país
+          </Paragraph>
+          <Button size="large" style={{ background: 'white', color: '#1890ff' }}>
+            Registrarse Ahora
+          </Button>
+        </div>
+      </Content>
+
+      {/* Footer */}
+      <Footer style={{ textAlign: 'center', background: '#001529', color: 'rgba(255,255,255,0.65)' }}>
+        <Row gutter={[24, 24]}>
+          <Col xs={24} md={8}>
+            <Title level={4} style={{ color: 'white' }}>Rescatistas Voluntarios</Title>
+            <Text>Plataforma de coordinación para emergencias</Text>
+          </Col>
+          <Col xs={24} md={8}>
+            <Title level={5} style={{ color: 'white' }}>Contacto</Title>
+            <Paragraph>contacto@rescatistas.org</Paragraph>
+            <Paragraph>+57 300 123 4567</Paragraph>
+          </Col>
+          <Col xs={24} md={8}>
+            <Title level={5} style={{ color: 'white' }}>Redes Sociales</Title>
+            <Button type="link" style={{ color: 'rgba(255,255,255,0.65)' }}>Facebook</Button>
+            <Button type="link" style={{ color: 'rgba(255,255,255,0.65)' }}>Twitter</Button>
+            <Button type="link" style={{ color: 'rgba(255,255,255,0.65)' }}>Instagram</Button>
+          </Col>
+        </Row>
+        <div style={{ marginTop: 40 }}>
+          © {new Date().getFullYear()} Rescatistas Voluntarios. Todos los derechos reservados.
+        </div>
+      </Footer>
+    </Layout>
   );
-}
+};
+
+export default Home;
