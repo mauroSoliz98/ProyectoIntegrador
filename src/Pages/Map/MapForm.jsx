@@ -19,6 +19,7 @@ export const MapForm = ({ newEvent, handleChange, handleSelectChange }) => {
     return (
         <div className="mt-5 flex flex-col gap-4 p-2">
             <SelectOptions
+                data-testid="disaster-type-select"
                 label="Tipo de desastre"
                 defaultValue="Incendio"
                 options={disasterOptions}
@@ -28,6 +29,7 @@ export const MapForm = ({ newEvent, handleChange, handleSelectChange }) => {
             />
 
             <SelectOptions
+                data-testid="severity-select"
                 label="Severidad"
                 defaultValue="alto"
                 options={severityOptions}

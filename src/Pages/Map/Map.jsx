@@ -230,6 +230,7 @@ const Map = () => {
       >
         {selectedPosition && (
           <Card
+            data-testid="location-card"
             className="mb-4"
             cover={
               <div className="bg-[url(https://cdn.leonardo.ai/users/11fb33c1-1772-448f-bd6b-16e3e19e3b08/generations/ca678d30-7176-40d5-9c2c-a1e6eeebf94c/Leonardo_Phoenix_10_A_colorful_flat_design_illustration_of_the_2.jpg)] w-full h-40 bg-center bg-cover" />
