@@ -69,6 +69,7 @@ export const Login = () => {
                 <div>
                     <Text type="secondary">Username</Text>
                     <Input 
+                        name='username'
                         value={login.username} 
                         placeholder='correo electronico' 
                         size="large" 
@@ -78,6 +79,7 @@ export const Login = () => {
                 <div>
                     <Text type="secondary">Password</Text>
                     <Input.Password 
+                        name='password'
                         value={login.password} 
                         placeholder='contraseña' 
                         size="large" 
