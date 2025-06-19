@@ -1,5 +1,5 @@
 import api from "./api/baseUrl";
-const path = "/api/points";
+const path = "/points";
 
 const getAll = async() => {
     try {

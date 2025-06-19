@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../../Context/AuthContext';
 import serviceChat from '../../Services/serviceChat';
-import { Button, Input, List, Avatar, Spin, Card, message } from 'antd';
+import { Button, Input, List, Spin, Card, message } from 'antd';
 import { SendOutlined } from '@ant-design/icons';
 
 const { TextArea } = Input;
@@ -42,19 +42,22 @@ const Chat = () => {
   useEffect(() => {
     if (!profileId) return;
 
-    // Crear conexión WebSocket con el backend
-    //const websocketUrl = `wss://https://proyectointegradorbackend-gbuj.onrender.com//api/chat/ws`; 
-    const websocketUrl = `ws://localhost:8000/api/chat/ws`; // Para desarrollo local
-    //websocketRef.current = serviceChat.socketConn(); //<--Falla
-    websocketRef.current = new WebSocket(websocketUrl);
+    // Crear conexión WebSocket usando el servicio
+    websocketRef.current = serviceChat.createChatSocket(profileId);
+    
+    // Manejar eventos del WebSocket
     websocketRef.current.onopen = () => {
       console.log('Conexión WebSocket establecida');
     };
 
     websocketRef.current.onmessage = (event) => {
       try {
-        const newMessage = JSON.parse(event.data);
-        setMessages(prev => [...prev, newMessage]);
+        const messageData = JSON.parse(event.data);
+        
+        // Verificar si es un mensaje válido
+        if (messageData && messageData.content && messageData.profile_id) {
+          setMessages(prev => [...prev, messageData]);
+        }
       } catch (error) {
         console.error('Error al parsear mensaje WebSocket:', error);
       }
@@ -65,13 +68,18 @@ const Chat = () => {
       message.error('Error en conexión de tiempo real');
     };
 
-    websocketRef.current.onclose = () => {
-      console.log('Conexión WebSocket cerrada');
+    websocketRef.current.onclose = (event) => {
+      if (event.wasClean) {
+        console.log(`Conexión cerrada limpiamente: ${event.reason}`);
+      } else {
+        console.error('Conexión interrumpida');
+      }
     };
 
+    // Limpieza al desmontar el componente
     return () => {
       if (websocketRef.current) {
-        websocketRef.current.close();
+        websocketRef.current.close(1000, "Componente desmontado");
       }
     };
   }, [profileId]);
@@ -85,19 +93,26 @@ const Chat = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const handleSend = async () => {
+  const handleSend = () => {
     if (!newMessage.trim() || !profileId) return;
 
     try {
       setSending(true);
-      const messageData = {
+      
+      // Construir el mensaje en el formato esperado por el backend
+      const messageToSend = {
+        type: "message",
         profile_id: profileId,
         content: newMessage
       };
-
-      // Enviar mensaje a través del servicio HTTP
-      await serviceChat.create(messageData);
-      setNewMessage('');
+      
+      // Enviar mensaje a través del WebSocket
+      if (websocketRef.current && websocketRef.current.readyState === WebSocket.OPEN) {
+        websocketRef.current.send(JSON.stringify(messageToSend));
+        setNewMessage('');
+      } else {
+        message.error('No hay conexión WebSocket activa');
+      }
     } catch (error) {
       console.error('Error al enviar mensaje:', error);
       message.error('Error al enviar mensaje');
@@ -156,6 +171,9 @@ const Chat = () => {
                       "Tú" : user.user_metadata?.full_name || user.email}
                   </div>
                   <div>{msg.content}</div>
+                  <div style={{ fontSize: '0.75rem', color: '#666', marginTop: '4px' }}>
+                    {new Date(msg.timestamp).toLocaleTimeString()}
+                  </div>
                 </div>
               </List.Item>
             )}

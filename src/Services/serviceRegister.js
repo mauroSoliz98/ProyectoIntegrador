@@ -1,5 +1,5 @@
 import api from "./api/baseUrl";
-const path = "/api/auth";
+const path = "/auth";
 
 const create = async (data) => {
   try {
