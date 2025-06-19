@@ -26,7 +26,7 @@ function App() {
             <Route index element={<Map />} />
             <Route path="home" element={<Home />} />
             <Route path="map" element={<Map />} />
-            <Route path="foro" element={<Chat />} />
+            <Route path="chat" element={<Chat />} />
             <Route path="capacitaciones" element={<Capacitaciones />} />
             <Route path="aboutus" element={<AboutUs />} />
           </Route>
