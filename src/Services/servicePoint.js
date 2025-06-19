@@ -1,9 +1,9 @@
-import axios from "axios";
-const baseURL = "/api/points";
+import api from "./api/baseUrl";
+const path = "/api/points";
 
 const getAll = async() => {
     try {
-        const response = await axios.get(baseURL);
+        const response = await api.get(path);
         return response.data;
     } catch (error) {
         console.error("Error fetching data:", error);
@@ -13,7 +13,7 @@ const getAll = async() => {
 
 const create = async(data) => {
     try {
-        const response = await axios.post(baseURL, data);
+        const response = await api.post(path, data);
         return response.data;
     } catch (error) {
         console.error("Error creating data:", error);
@@ -23,7 +23,7 @@ const create = async(data) => {
 
 const eliminate = async(id) => {
     try {
-        const response = await axios.delete(`${baseURL}/${id}`);
+        const response = await api.delete(`${path}/${id}`);
         return response.data;
     } catch (error) {
         console.error("Error deleting data:", error);
@@ -33,7 +33,7 @@ const eliminate = async(id) => {
 
 const update = async(id, data) => {
     try {
-        const response = await axios.put(`${baseURL}/${id}`, data);
+        const response = await api.put(`${path}/${id}`, data);
         return response.data;
     } catch (error) {
         console.error("Error updating data:", error);

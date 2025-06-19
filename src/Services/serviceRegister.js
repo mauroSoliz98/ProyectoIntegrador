@@ -1,9 +1,9 @@
-import axios from "axios";
-const baseURL = "/api/auth";
+import api from "./api/baseUrl";
+const path = "/api/auth";
 
 const create = async (data) => {
   try {
-    const response = await axios.post(`${baseURL}/register`, data);
+    const response = await api.post(`${path}/register`, data);
     return response.data;
   } catch (error) {
     console.error("Error creating user:", error);
@@ -12,7 +12,7 @@ const create = async (data) => {
 }
 const enter = async (data) => {
   try {
-    const response = await axios.post(`${baseURL}/login`, data);
+    const response = await api.post(`${path}/login`, data);
     return response.data;
   } catch (error) {
     console.error("Error logging in:", error);
