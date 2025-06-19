@@ -5,10 +5,10 @@ export const createWebSocketConnection = (path = '') => {
   
   if (import.meta.env.PROD) {
     // En producción, usar wss:// para conexión segura
-    socketUrl = import.meta.env.VITE_WEBSOCKET_PROD || 'wss://meaningful-laurella-maurosoliz98-6ca31c8e.koyeb.app/api/chat/ws';
+    socketUrl = import.meta.env.VITE_WEBSOCKET_PROD;
   } else {
     // En desarrollo, usar ws:// para conexión local
-    socketUrl = import.meta.env.VITE_WEBSOCKET_DEV || 'ws://localhost:8000/api/chat/ws';
+    socketUrl = import.meta.env.VITE_WEBSOCKET_DEV;
   }
 
   // Si se proporciona un path adicional, agregarlo (aunque no lo usaremos por ahora)
