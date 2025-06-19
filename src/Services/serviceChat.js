@@ -26,6 +26,7 @@ const create = async (data) => {
 
 // Función específica para el WebSocket de chat
 export const createChatSocket = (profileId) => {
+  // Crear conexión WebSocket sin path adicional ya que está en baseUrl
   const socket = createWebSocketConnection();
   
   // Cuando se abre la conexión, enviamos el profileId para unirse al chat
@@ -33,7 +34,7 @@ export const createChatSocket = (profileId) => {
     console.log('Conexión WebSocket establecida para chat');
     socket.send(JSON.stringify({
       type: "join",
-      profileId: profileId
+      profile_id: profileId // Cambiado de profileId a profile_id por consistencia
     }));
   };
   
