@@ -93,33 +93,35 @@ const Chat = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const handleSend = () => {
-    if (!newMessage.trim() || !profileId) return;
+// Solo la parte del handleSend que necesita cambiar
+const handleSend = () => {
+  if (!newMessage.trim() || !profileId) return;
 
-    try {
-      setSending(true);
-      
-      // Construir el mensaje en el formato esperado por el backend
-      const messageToSend = {
-        type: "message",
-        profile_id: profileId,
-        content: newMessage
-      };
-      
-      // Enviar mensaje a través del WebSocket
-      if (websocketRef.current && websocketRef.current.readyState === WebSocket.OPEN) {
-        websocketRef.current.send(JSON.stringify(messageToSend));
-        setNewMessage('');
-      } else {
-        message.error('No hay conexión WebSocket activa');
-      }
-    } catch (error) {
-      console.error('Error al enviar mensaje:', error);
-      message.error('Error al enviar mensaje');
-    } finally {
-      setSending(false);
+  try {
+    setSending(true);
+    
+    // Construir el mensaje en el formato esperado por el backend
+    // Tu backend espera un objeto con profile_id y content directamente
+    const messageToSend = {
+      profile_id: profileId,
+      content: newMessage
+    };
+    
+    // Enviar mensaje a través del WebSocket
+    if (websocketRef.current && websocketRef.current.readyState === WebSocket.OPEN) {
+      // Tu backend usa receive_json(), así que enviamos JSON
+      websocketRef.current.send(JSON.stringify(messageToSend));
+      setNewMessage('');
+    } else {
+      message.error('No hay conexión WebSocket activa');
     }
-  };
+  } catch (error) {
+    console.error('Error al enviar mensaje:', error);
+    message.error('Error al enviar mensaje');
+  } finally {
+    setSending(false);
+  }
+};
 
   if (!user) {
     return (

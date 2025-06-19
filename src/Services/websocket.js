@@ -1,18 +1,20 @@
 // services/websocket.js
 export const createWebSocketConnection = (path = '') => {
   // Determinar la URL base según el entorno
-  let baseUrl;
+  let socketUrl;
   
   if (import.meta.env.PROD) {
     // En producción, usar wss:// para conexión segura
-    baseUrl = import.meta.env.VITE_WEBSOCKET_PROD || 'wss://meaningful-laurella-maurosoliz98-6ca31c8e.koyeb.app/api/chat/ws';
+    socketUrl = import.meta.env.VITE_WEBSOCKET_PROD || 'wss://meaningful-laurella-maurosoliz98-6ca31c8e.koyeb.app/api/chat/ws';
   } else {
     // En desarrollo, usar ws:// para conexión local
-    baseUrl = import.meta.env.VITE_WEBSOCKET_DEV || 'ws://localhost:8000/api/chat/ws';
+    socketUrl = import.meta.env.VITE_WEBSOCKET_DEV || 'ws://localhost:8000/api/chat/ws';
   }
 
-  // Si se proporciona un path adicional, agregarlo
-  const socketUrl = path ? `${baseUrl}${path}` : baseUrl;
+  // Si se proporciona un path adicional, agregarlo (aunque no lo usaremos por ahora)
+  if (path) {
+    socketUrl = socketUrl + path;
+  }
   
   console.log('Conectando WebSocket a:', socketUrl); // Para debug
   

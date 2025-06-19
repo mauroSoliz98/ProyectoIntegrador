@@ -29,13 +29,14 @@ export const createChatSocket = (profileId) => {
   // Crear conexión WebSocket sin path adicional ya que está en baseUrl
   const socket = createWebSocketConnection();
   
-  // Cuando se abre la conexión, enviamos el profileId para unirse al chat
+  // Cuando se abre la conexión, no necesitamos enviar un "join" según tu backend actual
   socket.onopen = () => {
     console.log('Conexión WebSocket establecida para chat');
-    socket.send(JSON.stringify({
-      type: "join",
-      profile_id: profileId // Cambiado de profileId a profile_id por consistencia
-    }));
+    // Tu backend actual no maneja mensajes de tipo "join", así que comentamos esto
+    // socket.send(JSON.stringify({
+    //   type: "join",
+    //   profile_id: profileId
+    // }));
   };
   
   return socket;
