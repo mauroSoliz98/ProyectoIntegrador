@@ -1,3 +1,4 @@
+// Chat.jsx con debugging mejorado
 import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../../Context/AuthContext';
 import serviceChat from '../../Services/serviceChat';
@@ -12,10 +13,10 @@ const Chat = () => {
   const [newMessage, setNewMessage] = useState('');
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
+  const [wsStatus, setWsStatus] = useState('Desconectado'); // Estado del WebSocket
   const messagesEndRef = useRef(null);
   const websocketRef = useRef(null);
 
-  // Obtener profile_id del usuario
   const profileId = user?.user_id;
   
   // Cargar mensajes iniciales
@@ -25,7 +26,9 @@ const Chat = () => {
     const fetchMessages = async () => {
       try {
         setLoading(true);
+        console.log('Cargando mensajes para profileId:', profileId);
         const messagesData = await serviceChat.getAll(profileId);
+        console.log('Mensajes cargados:', messagesData);
         setMessages(messagesData);
       } catch (error) {
         console.error('Error al cargar mensajes:', error);
@@ -38,53 +41,75 @@ const Chat = () => {
     fetchMessages();
   }, [profileId]);
 
-  // Configurar WebSocket para actualizaciones en tiempo real
+  // Configurar WebSocket
   useEffect(() => {
     if (!profileId) return;
 
-    // Crear conexión WebSocket usando el servicio
-    websocketRef.current = serviceChat.createChatSocket(profileId);
+    console.log('Iniciando conexión WebSocket para profileId:', profileId);
     
-    // Manejar eventos del WebSocket
-    websocketRef.current.onopen = () => {
-      console.log('Conexión WebSocket establecida');
-    };
+    try {
+      // Crear conexión WebSocket
+      websocketRef.current = serviceChat.createChatSocket(profileId);
+      
+      // Manejar eventos del WebSocket
+      websocketRef.current.onopen = () => {
+        console.log('✅ Conexión WebSocket establecida exitosamente');
+        setWsStatus('Conectado');
+      };
 
-    websocketRef.current.onmessage = (event) => {
-      try {
-        const messageData = JSON.parse(event.data);
-        
-        // Verificar si es un mensaje válido
-        if (messageData && messageData.content && messageData.profile_id) {
-          setMessages(prev => [...prev, messageData]);
+      websocketRef.current.onmessage = (event) => {
+        console.log('📨 Mensaje recibido via WebSocket:', event.data);
+        try {
+          const messageData = JSON.parse(event.data);
+          console.log('Datos del mensaje parseados:', messageData);
+          
+          if (messageData && messageData.content && messageData.profile_id) {
+            setMessages(prev => {
+              console.log('Agregando mensaje a la lista:', messageData);
+              return [...prev, messageData];
+            });
+          } else {
+            console.warn('Mensaje recibido con formato inválido:', messageData);
+          }
+        } catch (error) {
+          console.error('Error al parsear mensaje WebSocket:', error);
         }
-      } catch (error) {
-        console.error('Error al parsear mensaje WebSocket:', error);
-      }
-    };
+      };
 
-    websocketRef.current.onerror = (error) => {
-      console.error('Error en WebSocket:', error);
-      message.error('Error en conexión de tiempo real');
-    };
+      websocketRef.current.onerror = (error) => {
+        console.error('❌ Error en WebSocket:', error);
+        setWsStatus('Error');
+        message.error('Error en conexión de tiempo real');
+      };
 
-    websocketRef.current.onclose = (event) => {
-      if (event.wasClean) {
-        console.log(`Conexión cerrada limpiamente: ${event.reason}`);
-      } else {
-        console.error('Conexión interrumpida');
-      }
-    };
+      websocketRef.current.onclose = (event) => {
+        console.log('🔌 WebSocket cerrado:', {
+          code: event.code,
+          reason: event.reason,
+          wasClean: event.wasClean
+        });
+        setWsStatus('Desconectado');
+        
+        if (!event.wasClean) {
+          console.error('Conexión WebSocket interrumpida inesperadamente');
+        }
+      };
 
-    // Limpieza al desmontar el componente
+    } catch (error) {
+      console.error('Error al crear WebSocket:', error);
+      setWsStatus('Error de conexión');
+    }
+
+    // Limpieza
     return () => {
       if (websocketRef.current) {
+        console.log('🧹 Cerrando conexión WebSocket');
         websocketRef.current.close(1000, "Componente desmontado");
       }
     };
   }, [profileId]);
 
-  // Scroll automático al final de los mensajes
+  // Scroll automático
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
@@ -93,51 +118,66 @@ const Chat = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-// Solo la parte del handleSend que necesita cambiar
-const handleSend = () => {
-  if (!newMessage.trim() || !profileId) return;
-
-  try {
-    setSending(true);
-    
-    // Construir el mensaje en el formato esperado por el backend
-    // Tu backend espera un objeto con profile_id y content directamente
-    const messageToSend = {
-      profile_id: profileId,
-      content: newMessage
-    };
-    
-    // Enviar mensaje a través del WebSocket
-    if (websocketRef.current && websocketRef.current.readyState === WebSocket.OPEN) {
-      // Tu backend usa receive_json(), así que enviamos JSON
-      websocketRef.current.send(JSON.stringify(messageToSend));
-      setNewMessage('');
-    } else {
-      message.error('No hay conexión WebSocket activa');
+  const handleSend = () => {
+    if (!newMessage.trim() || !profileId) {
+      console.warn('Mensaje vacío o profileId no disponible');
+      return;
     }
-  } catch (error) {
-    console.error('Error al enviar mensaje:', error);
-    message.error('Error al enviar mensaje');
-  } finally {
-    setSending(false);
-  }
-};
+
+    console.log('📤 Enviando mensaje:', newMessage);
+
+    try {
+      setSending(true);
+      
+      const messageToSend = {
+        profile_id: profileId,
+        content: newMessage
+      };
+      
+      console.log('Datos a enviar:', messageToSend);
+      console.log('Estado WebSocket:', websocketRef.current?.readyState);
+      
+      if (websocketRef.current && websocketRef.current.readyState === WebSocket.OPEN) {
+        const jsonMessage = JSON.stringify(messageToSend);
+        console.log('Enviando JSON:', jsonMessage);
+        
+        websocketRef.current.send(jsonMessage);
+        setNewMessage('');
+        console.log('✅ Mensaje enviado exitosamente');
+      } else {
+        console.error('❌ WebSocket no disponible. Estado:', websocketRef.current?.readyState);
+        message.error('No hay conexión WebSocket activa');
+      }
+    } catch (error) {
+      console.error('❌ Error al enviar mensaje:', error);
+      message.error('Error al enviar mensaje');
+    } finally {
+      setSending(false);
+    }
+  };
 
   if (!user) {
     return (
       <div style={{ textAlign: 'center', padding: '2rem' }}>
         <p>Por favor inicia sesión para usar el chat</p>
-        <Button type="primary" onClick={() => supabase.auth.signInWithOAuth({ provider: 'google' })}>
-          Iniciar sesión
-        </Button>
       </div>
     );
   }
 
   return (
     <Card 
-      title={`Chat - ${user.email}`}
-      variant={false}
+      title={
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <span>Chat - {user.email}</span>
+          <span style={{ 
+            fontSize: '12px', 
+            color: wsStatus === 'Conectado' ? '#52c41a' : '#ff4d4f',
+            fontWeight: 'normal'
+          }}>
+            {wsStatus}
+          </span>
+        </div>
+      }
       styles={{
         header: {
           background: '#1890ff',
@@ -174,7 +214,7 @@ const handleSend = () => {
                   </div>
                   <div>{msg.content}</div>
                   <div style={{ fontSize: '0.75rem', color: '#666', marginTop: '4px' }}>
-                    {new Date(msg.timestamp).toLocaleTimeString()}
+                    {new Date(msg.created_at || msg.timestamp).toLocaleTimeString()}
                   </div>
                 </div>
               </List.Item>
@@ -195,7 +235,7 @@ const handleSend = () => {
               }
             }}
             placeholder="Escribe un mensaje..."
-            disabled={sending}
+            disabled={sending || wsStatus !== 'Conectado'}
             style={{ flex: 1, marginRight: '10px' }}
           />
           <Button
@@ -203,7 +243,7 @@ const handleSend = () => {
             icon={<SendOutlined />}
             onClick={handleSend}
             loading={sending}
-            disabled={!newMessage.trim()}
+            disabled={!newMessage.trim() || wsStatus !== 'Conectado'}
           >
             Enviar
           </Button>

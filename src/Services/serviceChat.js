@@ -1,4 +1,4 @@
-// serviceChat.js
+// serviceChat.js (corregido)
 import api from "./api/baseUrl";
 import { createWebSocketConnection } from "./websocket";
 
@@ -24,19 +24,22 @@ const create = async (data) => {
   }
 }
 
-// Función específica para el WebSocket de chat
+// Función específica para el WebSocket de chat (corregida)
 export const createChatSocket = (profileId) => {
-  // Crear conexión WebSocket sin path adicional ya que está en baseUrl
+  // Crear conexión WebSocket (ya incluye el path /api/chat/ws)
   const socket = createWebSocketConnection();
   
-  // Cuando se abre la conexión, no necesitamos enviar un "join" según tu backend actual
+  // Configurar manejadores de eventos
   socket.onopen = () => {
-    console.log('Conexión WebSocket establecida para chat');
-    // Tu backend actual no maneja mensajes de tipo "join", así que comentamos esto
-    // socket.send(JSON.stringify({
-    //   type: "join",
-    //   profile_id: profileId
-    // }));
+    console.log(`Conexión WebSocket establecida para usuario: ${profileId}`);
+  };
+  
+  socket.onerror = (error) => {
+    console.error('Error en WebSocket de chat:', error);
+  };
+  
+  socket.onclose = (event) => {
+    console.log('WebSocket de chat cerrado:', event.code, event.reason);
   };
   
   return socket;

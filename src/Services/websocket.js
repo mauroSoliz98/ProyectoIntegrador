@@ -1,4 +1,4 @@
-// services/websocket.js
+// services/websocket.js (corregido)
 export const createWebSocketConnection = (path = '') => {
   // Determinar la URL base según el entorno
   let socketUrl;
@@ -11,23 +11,32 @@ export const createWebSocketConnection = (path = '') => {
     socketUrl = import.meta.env.VITE_WEBSOCKET_DEV;
   }
 
-  // Si se proporciona un path adicional, agregarlo (aunque no lo usaremos por ahora)
-  if (path) {
+  // Las URLs ya incluyen el path completo (/api/chat/ws)
+  // Solo agregamos path adicional si se proporciona
+  if (path && !socketUrl.includes(path)) {
     socketUrl = socketUrl + path;
   }
   
-  console.log('Conectando WebSocket a:', socketUrl); // Para debug
+  console.log('Conectando WebSocket a:', socketUrl);
   
   // Crear la conexión WebSocket
   const socket = new WebSocket(socketUrl);
   
-  // Manejar errores
+  // Manejar errores con más detalle
   socket.onerror = (error) => {
     console.error('WebSocket error:', error);
   };
   
+  socket.onopen = (event) => {
+    console.log('WebSocket conectado exitosamente');
+  };
+  
   socket.onclose = (event) => {
-    console.log('WebSocket cerrado:', event.code, event.reason);
+    console.log('WebSocket cerrado:', {
+      code: event.code,
+      reason: event.reason,
+      wasClean: event.wasClean
+    });
   };
   
   return socket;
@@ -36,7 +45,9 @@ export const createWebSocketConnection = (path = '') => {
 export const sendWebSocketMessage = (socket, message) => {
   if (socket.readyState === WebSocket.OPEN) {
     socket.send(JSON.stringify(message));
+    return true;
   } else {
     console.error('WebSocket not connected. Ready state:', socket.readyState);
+    return false;
   }
 };
